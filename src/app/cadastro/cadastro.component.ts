@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient,HttpHeaders } from "@angular/common/http";
-import { } from "@a"
 import { environment } from 'environments/environment.prod';
 
 declare var $:any;
@@ -14,6 +13,7 @@ declare var $:any;
 export class CadastroComponent implements OnInit{
     public headers = new HttpHeaders();
     public paciente : any;
+    public pacientes : any;
 
     public resumo : any = {
         meuGuiche       : 0,
@@ -23,7 +23,7 @@ export class CadastroComponent implements OnInit{
 
     constructor(public http : HttpClient){
         this.headers = this.headers.set("Content-Type","application/json; charset=utf8")
-        
+        this.listaDePacientes();
     }
     
     ngOnInit(){
@@ -51,9 +51,9 @@ export class CadastroComponent implements OnInit{
                 if(data != null){
                     alert("criado")
                 }
-            });
-        
+            })       
     }
+
 
     proximo(){
         let post : any = {
@@ -65,10 +65,22 @@ export class CadastroComponent implements OnInit{
             {headers : this.headers})
             .subscribe(data =>{
                 if(data != null){
-                    console.log(data)
+
                     this.resumo.senhaAtual = data[0]["senha"];
                 }
             });  
+    }
+
+    listaDePacientes(){
+        this.http.post("http://192.168.0.3/aluno/ws/alison/",
+        JSON.stringify({opt:1}),{headers : this.headers})
+        .subscribe(data => {
+            this.pacientes = data;
+        });
+    }
+
+    carregarPaciente(paciente){
+        this.paciente = paciente;
     }
 
 }
